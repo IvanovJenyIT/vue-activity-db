@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import TheHeader from './components/TheHeader.vue'
 import TheNav from './components/TheNav.vue'
 import TheTimeline from './pages/TheTimeline.vue'
@@ -9,27 +9,41 @@ import { PAGE_TIMELINE, PAGE_ACTIVITIES, PAGE_PROGRESS } from './constants/const
 import {
   normalizePageHash,
   generateTimelineItems,
-  generateActivitySelectOptions
+  generateActivitySelectOptions,
+  generateActivities
 } from '@/utilites/functions'
 
 const currentPage = ref(normalizePageHash())
 
-const timelineItems = generateTimelineItems()
+const timelineItems = ref(generateTimelineItems())
 
-const activities = ref(['Coding', 'Reading', 'Training'])
+const activities = ref(generateActivities())
 
-const activitySelectOptions = generateActivitySelectOptions(activities.value)
+const activitySelectOptions = computed(() => generateActivitySelectOptions(activities.value))
 
 function goTo(page) {
   currentPage.value = page
 }
 
 function deleteactivity(activity) {
+  timelineItems.value.forEach((element) => {
+    if (element.activityId === activity.id) {
+      element.activityId = null
+    }
+  })
   activities.value.splice(activities.value.indexOf(activity), 1)
 }
 
 function createActivity(activity) {
   activities.value.push(activity)
+}
+
+function setTimelineItemActivity(timelineItem, activity) {
+  timelineItem.activityId = activity.id
+}
+
+function setActivitySecondsToComplete(activity, secondsToComplete) {
+  activity.secondsToComplete = secondsToComplete
 }
 </script>
 
@@ -41,12 +55,15 @@ function createActivity(activity) {
       v-show="currentPage === PAGE_TIMELINE"
       :timeline-items="timelineItems"
       :activity-select-options="activitySelectOptions"
+      :activities="activities"
+      @set-timeline-item-activity="setTimelineItemActivity"
     />
     <TheActivities
       @create-activity="createActivity"
       @delete-activity="deleteactivity"
       v-show="currentPage === PAGE_ACTIVITIES"
       :activities="activities"
+      @set-activity-seconds-to-complete="setActivitySecondsToComplete"
     />
     <TheProgress v-show="currentPage === PAGE_PROGRESS" />
   </main>
