@@ -1,20 +1,15 @@
 <script setup>
 import BaseSelect from '@/components/BaseSelect.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import { ArrowPathIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline'
 import TimelineHour from '@/components/TimelineHour.vue'
 import {
   isTimelineItemValid,
   validateSelectOptions,
   isActivityValid,
-  validateActivities
+  validateActivities,
+  isHourValid
 } from '@/utilites/validators'
-import {
-  NULLABLE_ACTIVITY,
-  BUTTON_TYPE_SUCCESS,
-  BUTTON_TYPE_WARNING,
-  BUTTON_TYPE_DANGER
-} from '@/constants/constants'
+import { NULLABLE_ACTIVITY } from '@/constants/constants'
+import TimelineStopwatch from '@/components/TimelineStopwatch.vue'
 
 const props = defineProps({
   timelineItem: {
@@ -35,7 +30,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  selectActivity: isActivityValid
+  selectActivity: isActivityValid,
+  scrollToHour: isHourValid
 })
 
 function selectActivity(id) {
@@ -48,7 +44,10 @@ function findActivityById(id) {
 </script>
 <template>
   <li class="relative flex flex-col gap-2 border-t border-gray-200 py-10 px-4">
-    <TimelineHour :hour="timelineItem.hour" />
+    <TimelineHour
+      :hour="timelineItem.hour"
+      @click.prevent="emit('scrollToHour', timelineItem.hour)"
+    />
 
     <BaseSelect
       placeholder="Rest"
@@ -56,19 +55,6 @@ function findActivityById(id) {
       :options="activitySelectOptions"
       @select="selectActivity"
     />
-    <div class="flex w-full gap-2">
-      <BaseButton :type="BUTTON_TYPE_DANGER">
-        <ArrowPathIcon class="h-8" />
-      </BaseButton>
-      <div class="flex flex-grow items-center rounded bg-gray-100 px-2 font-mono text-3xl">
-        00:00:00
-      </div>
-      <BaseButton :type="BUTTON_TYPE_WARNING">
-        <PauseIcon class="h-8" />
-      </BaseButton>
-      <BaseButton :type="BUTTON_TYPE_SUCCESS">
-        <PlayIcon class="h-8" />
-      </BaseButton>
-    </div>
+    <TimelineStopwatch :seconds="timelineItem.activitySeconds" :hour="timelineItem.hour" />
   </li>
 </template>
