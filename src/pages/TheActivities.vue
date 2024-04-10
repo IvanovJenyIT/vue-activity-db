@@ -1,7 +1,12 @@
 <script setup>
 import ActivityItem from '@/components/ActivityItem.vue'
 import TheActivityForm from '@/components/TheActivityForm.vue'
-import { validateActivities, isActivityValid, isNumber } from '@/utilites/validators'
+import {
+  validateActivities,
+  isActivityValid,
+  isNumber,
+  validateTimelineItems
+} from '@/utilites/validators'
 import TheActivitiesEmptyState from '@/components/TheActivitiesEmptyState.vue'
 
 const emit = defineEmits({
@@ -17,6 +22,11 @@ defineProps({
     required: true,
     type: Array,
     validator: validateActivities
+  },
+  timelineItems: {
+    type: Array,
+    required: true,
+    validator: validateTimelineItems
   }
 })
 
@@ -34,6 +44,7 @@ function setSecondsToComplete(activity, secondsToComplete) {
         :activity="activity"
         @delete="emit('deleteActivity', activity)"
         @set-seconds-to-complete="setSecondsToComplete(activity, $event)"
+        :timeline-items="timelineItems"
       />
     </ul>
     <TheActivitiesEmptyState v-else />
