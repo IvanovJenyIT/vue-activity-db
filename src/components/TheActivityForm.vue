@@ -1,10 +1,9 @@
 <script setup>
-import { nextTick, ref, inject } from 'vue'
+import { nextTick, ref } from 'vue'
 import { PlusIcon } from '@heroicons/vue/24/outline'
 import BaseButton from '@/components/BaseButton.vue'
 import { id } from '@/utilites/functions'
-
-const createActivity = inject('createActivity')
+import { createActivity } from '@/activities'
 
 let name = ref('')
 
@@ -35,3 +34,4 @@ async function submit() {
     </BaseButton>
   </form>
 </template>
+@/utilites/keys

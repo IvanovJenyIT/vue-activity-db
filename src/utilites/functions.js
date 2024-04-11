@@ -1,12 +1,5 @@
-import {
-  PAGE_TIMELINE,
-  SECONDS_IN_HOUR,
-  HOURS_IN_DAY,
-  SECONDS_IN_MINUTE,
-  MINUTES_IN_HOUR,
-  MILLISECONDS_IN_SECOND
-} from '@/constants/constants'
-import { isPageValid, isNull } from '@/utilites/validators'
+import { SECONDS_IN_MINUTE, MINUTES_IN_HOUR, MILLISECONDS_IN_SECOND } from '@/constants/constants'
+import { isNull } from '@/utilites/validators'
 
 export function formatSeconds(seconds) {
   const date = new Date()
@@ -20,37 +13,6 @@ export function formatSeconds(seconds) {
 
 export function normalizeSelectValue(value) {
   return isNull(value) || isNaN(value) ? value : +value
-}
-
-export function normalizePageHash() {
-  const page = window.location.hash.slice(1)
-  if (isPageValid(page)) {
-    return page
-  }
-  window.location.hash = PAGE_TIMELINE
-  return PAGE_TIMELINE
-}
-
-export function generateTimelineItems(activities) {
-  return [...Array(HOURS_IN_DAY).keys()].map((hour) => ({
-    hour,
-    activityId: [0, 1, 2, 3, 4].includes(hour) ? activities[hour % 3].id : null,
-    activitySeconds: [0, 1, 2, 3, 4].includes(hour) ? hour * 600 : 0
-    // activityId: hour % 4 === 0 ? null : activities[hour % 2].id,
-    // activitySeconds: hour % 4 === 0 ? 0 : (15 * SECONDS_IN_MINUTE * hour) % SECONDS_IN_HOUR
-  }))
-}
-
-export function generateActivitySelectOptions(activities) {
-  return activities.map((activity) => ({ value: activity.id, label: activity.name }))
-}
-
-export function generateActivities() {
-  return ['Coding', 'Training', 'Reading'].map((name, hours) => ({
-    id: id(),
-    name,
-    secondsToComplete: hours * SECONDS_IN_HOUR
-  }))
 }
 
 export function id() {
@@ -77,8 +39,6 @@ function generatePeriodSelectOptionsLabel(periodInMinutes) {
   return `${hours}:${minutes}`
 }
 
-export function getTotalActivitySeconds(acvity, timelineItems) {
-  return timelineItems
-    .filter((timelineItem) => timelineItem.activityId === acvity.id)
-    .reduce((acc, item) => Math.round(acc + item.activitySeconds), 0)
+export function currentHour() {
+  return new Date().getHours()
 }
