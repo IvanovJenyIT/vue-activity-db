@@ -1,6 +1,5 @@
 <script setup>
-import { ref } from 'vue'
-import { ArrowPathIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline'
+import { ref, watch } from 'vue'
 import { formatSeconds, currentHour } from '@/utilites/functions'
 import { isTimelineItemValid } from '@/utilites/validators'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,7 +9,10 @@ import {
   BUTTON_TYPE_DANGER,
   MILLISECONDS_IN_SECOND
 } from '@/constants/constants'
-import { updateTimelineItemActivitySeconds } from '@/timeline-items'
+import { ICON_ARROW_PATH, ICON_PAUSE, ICON_PLAY } from '@/utilites/icons'
+
+import { updateTimelineItem } from '@/timeline-items'
+import BaseIcon from '@/components/BaseIcon.vue'
 
 const props = defineProps({
   timelineItem: {
@@ -22,12 +24,20 @@ const props = defineProps({
 
 const seconds = ref(props.timelineItem.activitySeconds)
 const isRunning = ref(false)
+const temp = 120
 
 const isStartButtonDisabled = props.timelineItem.hour !== currentHour()
 
+watch(
+  () => props.timelineItem.activityId,
+  () => updateTimelineItem(props.timelineItem, { activitySeconds: seconds.value * temp })
+)
+
 function start() {
   isRunning.value = setInterval(() => {
-    updateTimelineItemActivitySeconds(props.timelineItem, 1)
+    updateTimelineItem(props.timelineItem, {
+      activitySeconds: props.timelineItem.activitySeconds + temp
+    })
     seconds.value++
   }, MILLISECONDS_IN_SECOND)
 }
@@ -39,7 +49,9 @@ function stop() {
 
 function reset() {
   stop()
-  updateTimelineItemActivitySeconds(props.timelineItem, -seconds.value)
+  updateTimelineItem(props.timelineItem, {
+    activitySeconds: props.timelineItem.activitySeconds - seconds.value * temp
+  })
 
   seconds.value = 0
 }
@@ -48,16 +60,16 @@ function reset() {
 <template>
   <div class="flex w-full gap-2">
     <BaseButton :disabled="!seconds" :type="BUTTON_TYPE_DANGER" @click="reset">
-      <ArrowPathIcon class="h-8" />
+      <BaseIcon :name="ICON_ARROW_PATH" />
     </BaseButton>
     <div class="flex flex-grow items-center rounded bg-gray-100 px-2 font-mono text-3xl">
       {{ formatSeconds(seconds) }}
     </div>
     <BaseButton v-if="isRunning" :type="BUTTON_TYPE_WARNING" @click="stop">
-      <PauseIcon class="h-8" />
+      <BaseIcon :name="ICON_PAUSE" />
     </BaseButton>
     <BaseButton v-else :type="BUTTON_TYPE_SUCCESS" @click="start" :disabled="isStartButtonDisabled">
-      <PlayIcon class="h-8" />
+      <BaseIcon :name="ICON_PLAY" />
     </BaseButton>
   </div>
 </template>

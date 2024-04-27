@@ -1,4 +1,11 @@
-import { SECONDS_IN_MINUTE, MINUTES_IN_HOUR, MILLISECONDS_IN_SECOND } from '@/constants/constants'
+import {
+  MILLISECONDS_IN_SECOND,
+  SECONDS_IN_MINUTE,
+  MINUTES_IN_HOUR,
+  HUNDRED_PERCENT,
+  MEDIUM_PERCENT,
+  LOW_PERCENT
+} from '@/constants/constants'
 import { isNull } from '@/utilites/validators'
 
 export function formatSeconds(seconds) {
@@ -17,6 +24,14 @@ export function normalizeSelectValue(value) {
 
 export function id() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2)
+}
+
+export function getProgressColorClass(percentage) {
+  if (percentage < LOW_PERCENT) return 'bg-red-500'
+  if (percentage < MEDIUM_PERCENT) return 'bg-yellow-500'
+  if (percentage < HUNDRED_PERCENT) return 'bg-blue-500'
+
+  return 'bg-green-500'
 }
 
 export function generatePeriodSelectOptions() {

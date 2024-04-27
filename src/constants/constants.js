@@ -1,5 +1,5 @@
-import { ClockIcon, ListBulletIcon, ChartBarIcon } from '@heroicons/vue/24/outline'
 import { generatePeriodSelectOptions } from '@/utilites/functions'
+import { ICON_CLOCK, ICON_LIST_BULLET, ICON_CHART_BAR } from '@/utilites/icons'
 
 export const BUTTON_TYPE_PRIMARY = 'primary'
 export const BUTTON_TYPE_SUCCESS = 'success'
@@ -27,9 +27,13 @@ export const HOURS_IN_DAY = 24
 export const MIDNIGHT_HOUR = 0
 
 export const NAV_ITEMS = [
-  { page: PAGE_TIMELINE, icon: ClockIcon },
-  { page: PAGE_ACTIVITIES, icon: ListBulletIcon },
-  { page: PAGE_PROGRESS, icon: ChartBarIcon }
+  { page: PAGE_TIMELINE, icon: ICON_CLOCK },
+  { page: PAGE_ACTIVITIES, icon: ICON_LIST_BULLET },
+  { page: PAGE_PROGRESS, icon: ICON_CHART_BAR }
 ]
 
 export const PERIOD_SELECT_OPTIONS = generatePeriodSelectOptions()
+
+export const LOW_PERCENT = 33
+export const MEDIUM_PERCENT = 66
+export const HUNDRED_PERCENT = 100
